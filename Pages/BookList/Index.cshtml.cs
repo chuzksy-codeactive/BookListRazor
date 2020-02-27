@@ -23,7 +23,7 @@ namespace BookListRazor.Pages.BookList
         }
         public async Task OnGetAsync ()
         {
-            Books = await _dbContext.Books.ToListAsync();
+            Books = await _dbContext.Books.ToListAsync ();
         }
     }
 }
