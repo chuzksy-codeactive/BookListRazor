@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using BookListRazor.Model;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,7 +17,7 @@ namespace BookListRazor
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup (IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -23,9 +25,9 @@ namespace BookListRazor
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices (IServiceCollection services)
         {
-            if (Environment.GetEnvironmentVariable ("ASPNETCORE_ENVIRONMENT") == "Development")
+            if (Environment.GetEnvironmentVariable ("ASPNETCORE_ENVIRONMENT") == "Production")
             {
                 services.AddDbContext<BookDbContext> (options =>
                     options.UseSqlServer (
@@ -37,35 +39,37 @@ namespace BookListRazor
                     options.UseSqlServer (
                         Configuration.GetConnectionString ("DefaultConnection")));
             }
-            services.AddControllersWithViews();
-            services.AddRazorPages().AddRazorRuntimeCompilation();
+            // Automatically perform database migration
+            services.BuildServiceProvider ().GetService<BookDbContext> ().Database.Migrate ();
+            services.AddControllersWithViews ();
+            services.AddRazorPages ().AddRazorRuntimeCompilation ();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure (IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment ())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage ();
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler ("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts ();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseHttpsRedirection ();
+            app.UseStaticFiles ();
 
-            app.UseRouting();
+            app.UseRouting ();
 
-            app.UseAuthorization();
+            app.UseAuthorization ();
 
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints (endpoints =>
             {
-                endpoints.MapControllers();
-                endpoints.MapRazorPages();
+                endpoints.MapControllers ();
+                endpoints.MapRazorPages ();
             });
         }
     }
