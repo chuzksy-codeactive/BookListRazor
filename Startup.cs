@@ -31,8 +31,6 @@ namespace BookListRazor
                     options.UseSqlServer (
                         Configuration["DefaultConnection"]));
 
-            // Automatically perform database migration
-            services.BuildServiceProvider ().GetService<BookDbContext> ().Database.Migrate ();
             services.AddControllersWithViews ();
             services.AddRazorPages ().AddRazorRuntimeCompilation ();
         }
