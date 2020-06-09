@@ -2,11 +2,10 @@
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
+COPY *.sln .
 COPY ["BookListRazor.csproj", ""]
 RUN dotnet restore "./BookListRazor.csproj"
 COPY . .
@@ -19,4 +18,6 @@ RUN dotnet publish "BookListRazor.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet BookListRazor.API.dll
+#ENTRYPOINT ["dotnet", "BookListRazor.dll"]
+#
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet BookListRazor.dll
