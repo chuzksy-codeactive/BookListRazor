@@ -27,18 +27,10 @@ namespace BookListRazor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services)
         {
-            if (Environment.GetEnvironmentVariable ("ASPNETCORE_ENVIRONMENT") == "Production")
-            {
                 services.AddDbContext<BookDbContext> (options =>
                     options.UseSqlServer (
-                        Configuration.GetConnectionString ("AzureConnection")));
-            }
-            else
-            {
-                services.AddDbContext<BookDbContext> (options =>
-                    options.UseSqlServer (
-                        Configuration.GetConnectionString ("DefaultConnection")));
-            }
+                        Configuration["DefaultConnection"]));
+
             // Automatically perform database migration
             services.BuildServiceProvider ().GetService<BookDbContext> ().Database.Migrate ();
             services.AddControllersWithViews ();
